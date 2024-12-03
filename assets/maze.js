@@ -23,18 +23,21 @@ let doodler = {
 //physics
 let velocityX = 0; 
 let velocityY = 0; //doodler jump speed
-let initialVelocityY = -8; //starting velocity Y
-let gravity = 0.4;
+let initialVelocityY = -6; //starting velocity Y
+let gravity = 0.3;
 
 //platforms
 let platformArray = [];
-let platformWidth = 60;
-let platformHeight = 18;
+let platformWidth = 55;
+let platformHeight = 28;
 let platformImg;
 
 let score = 0;
 let maxScore = 0;
 let gameOver = false;
+
+let music;
+let sound;
 
 window.onload = function() {
     board = document.getElementById("board");
@@ -45,6 +48,10 @@ window.onload = function() {
     //draw doodler
     // context.fillStyle = "green";
     // context.fillRect(doodler.x, doodler.y, doodler.width, doodler.height);
+    music = new Audio("../sound/sound1.mp3"); // Replace with your music file path
+    music.loop = true;
+    sound = new Audio("../sound/sound2.mp3"); // Replace with your music file path
+    sound.loop = false;
 
     //load images
     doodlerRightImg = new Image();
@@ -62,6 +69,7 @@ window.onload = function() {
 
     velocityY = initialVelocityY;
     placePlatforms();
+    music.play();
     requestAnimationFrame(update);
     document.addEventListener("keydown", moveDoodler);
 }
@@ -69,6 +77,7 @@ window.onload = function() {
 function update() {
     requestAnimationFrame(update);
     if (gameOver) {
+        music.pause();
         return;
     }
     context.clearRect(0, 0, board.width, board.height);
@@ -114,8 +123,10 @@ function update() {
     context.fillText(score, 5, 20);
 
     if (gameOver) {
-        context.fillText("Game Over:Press 'Space' to Restart", boardWidth/7, boardHeight*7/8);
+        context.fillText("Game Over: Press 'Space' to Restart", boardWidth/7, boardHeight*7/8);
+        sound.play();
     }
+    
 }
 
 function moveDoodler(e) {
@@ -143,6 +154,9 @@ function moveDoodler(e) {
         maxScore = 0;
         gameOver = false;
         placePlatforms();
+
+        music.currentTime = 0; // Restart the music
+        music.play();
     }
 }
 
